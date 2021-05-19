@@ -1,16 +1,64 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { Link, useHistory } from "react-router-dom";
+import axios from "axios";
+import Loader from "react-loader-spinner";
+
+// IMPLEMENTAR O CONTEXT
 
 const Login = () => {
+  const [body, setBody] = useState({
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  let history = useHistory();
+
+  function sendLoginInfo() {
+    setLoading(true);
+    const promise = axios.post(
+      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
+      body
+    );
+    promise.then(() => {
+      console.log("sucesso");
+      history.push("/habitos");
+    });
+    promise.catch(() => {
+      alert("Algo deu errado. Tente novamente");
+      setLoading(false);
+    });
+  }
+
   return (
     <Container>
       <img src="logo.png" alt="aaaa" />
       <ContainerInputs>
-        <input type="text" placeholder="teste@teste.com" />
-        <input type="text" placeholder="••••••" />
-        <button disabled>Entrar</button>
+        <input
+          type="text"
+          placeholder="email"
+          onChange={(e) => setBody({ ...body, email: e.target.value })}
+          value={body.email}
+          disabled={loading}
+        />
+        <input
+          type="password"
+          placeholder="senha"
+          onChange={(e) => setBody({ ...body, password: e.target.value })}
+          value={body.password}
+          disabled={loading}
+        />
+        <button onClick={sendLoginInfo} disabled={loading}>
+          {loading ? (
+            <Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} />
+          ) : (
+            "Entrar"
+          )}
+        </button>
       </ContainerInputs>
-      <span>Não tem uma conta? Cadastre-se!</span>
+      <Link to="/cadastro">
+        <span>Não tem uma conta? Cadastre-se!</span>
+      </Link>
     </Container>
   );
 };
