@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import Loader from "react-loader-spinner";
-
+import UserContext from "../Components/contexts/UserContext";
 // IMPLEMENTAR O CONTEXT
 
 const Login = () => {
+  const { user, setUser } = useContext(UserContext);
   const [body, setBody] = useState({
     email: "",
     password: "",
@@ -20,9 +21,11 @@ const Login = () => {
       "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
       body
     );
-    promise.then(() => {
+    promise.then((response) => {
       console.log("sucesso");
       history.push("/habitos");
+      setUser(response.data);
+      console.log(response.data);
     });
     promise.catch(() => {
       alert("Algo deu errado. Tente novamente");
