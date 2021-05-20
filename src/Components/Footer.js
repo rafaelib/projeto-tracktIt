@@ -23,6 +23,8 @@ const Container = styled.footer`
   left: 0;
   padding-right: 10px;
   padding-left: 10px;
+  width: 100%;
+  height: 70px;
 
   span {
     font-size: 18px;
