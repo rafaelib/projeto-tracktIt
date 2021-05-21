@@ -1,17 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
+import { TrashOutline } from "react-ionicons";
 import axios from "axios";
 import styled from "styled-components";
 import UserContext from "../Components/contexts/UserContext";
 import Header from "./Header";
 import Footer from "./Footer";
+import Loader from "react-loader-spinner";
 
 const Habits = () => {
-  const [displayDesc, setDisplayDesc] = useState(true);
   const [displayNewHabit, setDisplayNewHabit] = useState(false);
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const token = user === null ? "" : user.token;
   const [habitsArray, setHabitsArray] = useState([]);
   const [body, setBody] = useState({ name: "", days: [] });
+  const [load, setLoad] = useState(false);
 
   const [weekdays, setWeekdays] = useState([
     { id: 0, character: "D", isSelected: false },
@@ -56,7 +58,26 @@ const Habits = () => {
     }
   }, [user]);
 
+  function loadHabits() {
+    const promise = axios.get(
+      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    promise.then((response) => {
+      console.log(user.token);
+      console.log(response.data);
+      setHabitsArray(response.data);
+    });
+    promise.catch((response) => {
+      console.log(user.token);
+      console.log(response.data);
+    });
+  }
+
   function sendHabit() {
+    setLoad(true);
     const promise = axios.post(
       "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
       body,
@@ -65,7 +86,7 @@ const Habits = () => {
       }
     );
     promise.then((response) => {
-      setDisplayDesc(false);
+      setLoad(false);
       setBody({ name: "", days: [] });
       setWeekdays([
         { id: 0, character: "D", isSelected: false },
@@ -82,6 +103,7 @@ const Habits = () => {
       console.log(habitsArray);
     });
     promise.catch(() => {
+      setLoad(false);
       alert("Algo deu errado. Tente novamente.");
     });
   }
@@ -100,6 +122,23 @@ const Habits = () => {
     setDisplayNewHabit(false);
   }
 
+  function deleteHabit(id) {
+    const confirmDelete = window.confirm(
+      "Você realmente deseja apagar esse hábito?"
+    );
+    if (confirmDelete) {
+      const promise = axios.delete(
+        `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      promise.then(loadHabits);
+    }
+  }
+
   return (
     <Container>
       <Header />
@@ -107,6 +146,8 @@ const Habits = () => {
         <span
           onClick={() => {
             console.log(body);
+            console.log(habitsArray);
+            console.log(habitsArray.length);
           }}
         >
           Meus hábitos
@@ -122,6 +163,7 @@ const Habits = () => {
       {displayNewHabit ? (
         <NewHabitContainer>
           <input
+            disabled={load}
             value={body.name}
             onChange={(e) => setBody({ ...body, name: e.target.value })}
             placeholder="nome do hábito"
@@ -132,6 +174,7 @@ const Habits = () => {
             {weekdays.map((day) => {
               return (
                 <Weekday
+                  disabled={load}
                   onClick={() => {
                     selectDay(day);
                     console.log(weekdays);
@@ -144,18 +187,27 @@ const Habits = () => {
             })}
           </WeekdaysContainer>
           <ButtonsContainer>
-            <button onClick={cancel} className="cancel">
+            <button disabled={load} onClick={cancel} className="cancel">
               Cancelar
             </button>
-            <button onClick={sendHabit} className="save">
-              Salvar
+            <button disabled={load} onClick={sendHabit} className="save">
+              {load ? (
+                <Loader
+                  type="ThreeDots"
+                  color="#FFFFFF"
+                  height={30}
+                  width={30}
+                />
+              ) : (
+                "Salvar"
+              )}
             </button>
           </ButtonsContainer>
         </NewHabitContainer>
       ) : (
         ""
       )}
-      {displayDesc ? (
+      {habitsArray.length < 1 ? (
         <Description>
           Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para
           começar a trackear!
@@ -163,6 +215,30 @@ const Habits = () => {
       ) : (
         ""
       )}
+      {habitsArray.map((i) => (
+        <Habit>
+          {console.log(i)}
+          <div className="container-delete">
+            <span>{i.name}</span>
+            <TrashOutline disabled={load} onClick={() => deleteHabit(i.id)} />
+          </div>
+          <WeekdaysContainer habit={true}>
+            {i.days.map((i) => {
+              return (
+                <div disabled={load} className="habit-weekday">
+                  {i === 1 || i === 5 || i === 6
+                    ? "S"
+                    : i === 3 || i === 4
+                    ? "Q"
+                    : i === 2
+                    ? "T"
+                    : "D"}
+                </div>
+              );
+            })}
+          </WeekdaysContainer>
+        </Habit>
+      ))}
 
       <Footer />
     </Container>
@@ -228,19 +304,12 @@ const NewHabitContainer = styled.div`
     border-radius: 5px;
     outline: none;
   }
-
-  .habit-name::placeholder {
-    color: #dbdbdb;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 25px;
-    padding-left: 10px;
-  }
 `;
 const WeekdaysContainer = styled.div`
   display: flex;
   margin-top: 10px;
-  margin-left: 7.5%;
+  margin-left: ${(props) => (props.habit ? "0px" : "7.5%")};
+  padding-bottom: ${(props) => (props.habit ? "10px" : "0px")};
 `;
 
 const Weekday = styled.button`
@@ -257,7 +326,6 @@ const Weekday = styled.button`
   outline: none;
   font-weight: 400;
   line-height: 25px;
-  text-align: left;
   color: ${(props) => (props.selection ? "#FFFFFF" : "#dbdbdb")}; ;
 `;
 
@@ -285,5 +353,44 @@ const ButtonsContainer = styled.div`
   .cancel {
     color: #52b6ff;
     background: #ffffff;
+  }
+`;
+
+const Habit = styled.div`
+  background: #ffffff;
+  width: 85%;
+  height: auto;
+  margin: 0 auto;
+  margin-top: 22px;
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  span {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 25px;
+    color: #666666;
+  }
+  .container-delete {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .habit-weekday {
+    background: #cfcfcf;
+    display: flex;
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    border: 1px solid #d5d5d5;
+    border-radius: 5px;
+    outline: none;
+    font-weight: 400;
+    line-height: 25px;
+    color: #ffffff;
   }
 `;

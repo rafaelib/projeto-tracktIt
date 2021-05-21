@@ -1,14 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
+import UserContext from "../Components/contexts/UserContext";
 
 const Header = () => {
+  const { user } = useContext(UserContext);
   return (
     <Container>
       <span>TrackIt</span>
-      <img
-        src="https://stc.ofuxico.com.br/img/upload/noticias/2020/02/27/bob-esponja-episodio-especial-melhores-momentos-nickelodeon_372085_36.jpg"
-        alt=""
-      />
+      <img src={user.image} alt="" />
     </Container>
   );
 };
@@ -32,13 +31,13 @@ const Container = styled.header`
     font-weight: 400;
     line-height: 49px;
     text-align: left;
-    margin-left: 10px;
+    margin-left: 7.5%;
   }
 
   img {
     height: 51px;
     width: 51px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: 7.5%;
   }
 `;
