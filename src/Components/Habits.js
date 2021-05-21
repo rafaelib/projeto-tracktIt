@@ -143,15 +143,7 @@ const Habits = () => {
     <Container>
       <Header />
       <Add>
-        <span
-          onClick={() => {
-            console.log(body);
-            console.log(habitsArray);
-            console.log(habitsArray.length);
-          }}
-        >
-          Meus hábitos
-        </span>
+        <span></span>
         <button
           onClick={() => {
             setDisplayNewHabit(true);
@@ -215,9 +207,8 @@ const Habits = () => {
       ) : (
         ""
       )}
-      {habitsArray.map((i) => (
-        <Habit>
-          {console.log(i)}
+      {habitsArray.map((i, index) => (
+        <Habit key={index}>
           <div className="container-delete">
             <span>{i.name}</span>
             <TrashOutline disabled={load} onClick={() => deleteHabit(i.id)} />

@@ -10,7 +10,7 @@ import ProgressBar from "../Components/contexts/ProgressBar";
 
 const App = () => {
   const [user, setUser] = useState(null);
-  const [progressBar, setProgressBar] = useState(50);
+  const [progressBar, setProgressBar] = useState(0);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
