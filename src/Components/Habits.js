@@ -46,14 +46,11 @@ const Habits = () => {
       );
 
       promise.then((response) => {
-        console.log(user.token);
-        console.log(response.data);
         setHabitsArray(response.data);
       });
 
-      promise.catch((response) => {
-        console.log(user.token);
-        console.log(response.data);
+      promise.catch(() => {
+        alert("Algo deu errado");
       });
     }
   }, [user]);
@@ -66,14 +63,9 @@ const Habits = () => {
       }
     );
     promise.then((response) => {
-      console.log(user.token);
-      console.log(response.data);
       setHabitsArray(response.data);
     });
-    promise.catch((response) => {
-      console.log(user.token);
-      console.log(response.data);
-    });
+    promise.catch((response) => {});
   }
 
   function sendHabit() {
@@ -97,10 +89,8 @@ const Habits = () => {
         { id: 5, character: "S", isSelected: false },
         { id: 6, character: "S", isSelected: false },
       ]);
-      console.log(response.data);
       setHabitsArray([...habitsArray, response.data]);
       setDisplayNewHabit(false);
-      console.log(habitsArray);
     });
     promise.catch(() => {
       setLoad(false);
@@ -169,7 +159,6 @@ const Habits = () => {
                   disabled={load}
                   onClick={() => {
                     selectDay(day);
-                    console.log(weekdays);
                   }}
                   selection={day.isSelected}
                 >

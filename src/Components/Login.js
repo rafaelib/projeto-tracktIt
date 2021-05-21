@@ -22,7 +22,6 @@ const Login = () => {
       body
     );
     promise.then((response) => {
-      console.log("sucesso");
       history.push("/habitos");
       setUser(response.data);
     });
@@ -73,7 +72,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: #e5e5e5;
-  height: auto;
+  height: 100vh;
 
   img {
     width: 45%;

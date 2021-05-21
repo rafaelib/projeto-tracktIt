@@ -8,6 +8,8 @@ import Footer from "./Footer";
 import { CheckmarkOutline } from "react-ionicons";
 import dayjs from "dayjs";
 
+function markHabit() {}
+
 const Today = () => {
   const { user } = useContext(UserContext);
   const token = user === null ? "" : user.token;
@@ -24,16 +26,6 @@ const Today = () => {
     "Sábado",
   ];
   const currentWeekday = weekdays[dayjs(new Date()).day()];
-
-  function selectHabit(habit) {
-    if (habit.done === true) {
-      habit.done = false;
-      setSelectedHabitsArray(habitsArray.filter((i) => i.done === true));
-    } else {
-      habit.done = true;
-      setSelectedHabitsArray(habitsArray.filter((i) => i.done === true));
-    }
-  }
 
   useEffect(() => {
     if (token !== "") {
@@ -58,12 +50,7 @@ const Today = () => {
     <Container>
       <Header />
       <Title>
-        <h1
-          onClick={() => {
-            console.log(habitsArray);
-            console.log(selectedHabitsArray);
-          }}
-        >
+        <h1>
           {currentWeekday}, {today}
         </h1>
         <span>Nenhum hábito concluído ainda</span>
@@ -73,12 +60,7 @@ const Today = () => {
               <h4>{i.name}</h4>
               <span>{`Sequencia Atual: ${i.currentSequence} Dias`}</span>
               <span>{`Maior Sequencia: ${i.highestSequence} Dias`}</span>
-              <CheckContainer
-                onClick={() => {
-                  selectHabit(i);
-                }}
-                selected={selectedHabitsArray.includes(i)}
-              >
+              <CheckContainer>
                 <CheckmarkOutline
                   color={"#FFFFFF"}
                   height="50px"
