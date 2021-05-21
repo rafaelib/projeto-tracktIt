@@ -87,6 +87,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: #e5e5e5;
+  height: auto;
 
   img {
     width: 45%;

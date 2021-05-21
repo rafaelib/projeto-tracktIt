@@ -25,7 +25,6 @@ const Login = () => {
       console.log("sucesso");
       history.push("/habitos");
       setUser(response.data);
-      console.log(response.data);
     });
     promise.catch(() => {
       alert("Algo deu errado. Tente novamente");
@@ -74,6 +73,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: #e5e5e5;
+  height: auto;
 
   img {
     width: 45%;
