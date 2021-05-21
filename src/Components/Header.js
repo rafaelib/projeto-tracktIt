@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <Container>
       <span>TrackIt</span>
-      <img src={user.image} alt="" />
+      <img src={user === null ? "" : user.image} alt="" />
     </Container>
   );
 };

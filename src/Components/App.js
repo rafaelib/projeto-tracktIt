@@ -6,31 +6,35 @@ import Habits from "./Habits";
 import Today from "./Today";
 import History from "./History";
 import UserContext from "../Components/contexts/UserContext";
+import ProgressBar from "../Components/contexts/ProgressBar";
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const [progressBar, setProgressBar] = useState(50);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/" exact>
-            <Login />
-          </Route>
-          <Route path="/cadastro" exact>
-            <Register />
-          </Route>
-          <Route path="/habitos" exact>
-            <Habits />
-          </Route>
-          <Route path="/hoje" exact>
-            <Today />
-          </Route>
-          <Route path="/historico" exact>
-            <History />
-          </Route>
-        </Switch>
-      </BrowserRouter>
+      <ProgressBar.Provider value={{ progressBar, setProgressBar }}>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" exact>
+              <Login />
+            </Route>
+            <Route path="/cadastro" exact>
+              <Register />
+            </Route>
+            <Route path="/habitos" exact>
+              <Habits />
+            </Route>
+            <Route path="/hoje" exact>
+              <Today />
+            </Route>
+            <Route path="/historico" exact>
+              <History />
+            </Route>
+          </Switch>
+        </BrowserRouter>
+      </ProgressBar.Provider>
     </UserContext.Provider>
   );
 };

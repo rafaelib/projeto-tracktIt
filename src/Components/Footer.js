@@ -1,11 +1,36 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { Link } from "react-router-dom";
+import ProgressBar from "../Components/contexts/ProgressBar";
 
 const Footer = () => {
+  const { progressBar } = useContext(ProgressBar);
+
   return (
     <Container>
-      <span>Hábitos</span>
-      <span>Histórico</span>
+      <Link to="/habitos">
+        <span>Hábitos</span>
+      </Link>
+      <Link to="/hoje">
+        <div>
+          <CircularProgressbar
+            background
+            value={progressBar}
+            text="Hoje"
+            styles={buildStyles({
+              textColor: "#ffffff",
+              pathColor: "#ffffff",
+              trailColor: "#52B6FF",
+              backgroundColor: "#52B6FF",
+            })}
+          />
+        </div>
+      </Link>
+      <Link to="/historico">
+        <span>Histórico</span>
+      </Link>
     </Container>
   );
 };
@@ -32,5 +57,11 @@ const Container = styled.footer`
     line-height: 22px;
     text-align: center;
     color: #52b6ff;
+  }
+
+  div {
+    height: 91px;
+    width: 91px;
+    margin-bottom: 48px;
   }
 `;
